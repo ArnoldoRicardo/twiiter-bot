@@ -1,6 +1,7 @@
 import os
 import random
 import re
+import shutil
 
 import openai
 from dotenv import load_dotenv
@@ -23,7 +24,8 @@ matches = re.findall(pattern, random_file)
 dalle_prompt = " ".join(matches)
 
 messages = [
-    {"role": "system", "content": "You will be provided with statements, and your task is to convert them to short tweet."},
+    {"role": "system",
+     "content": "You will be provided with descriptions of pixel art pieces. Your task is to turn these descriptions into attractive and creative short tweets."},
     {"role": "user", "content": dalle_prompt},
 ]
 
@@ -49,3 +51,7 @@ print(f"Prompt: {dalle_prompt}")
 print(f"Media: {random_file}")
 print(f"Respuesta: {answer}")
 print(response['data']['create_tweet']['tweet_results']['result']['legacy']['entities']['media'][0]['url'])
+
+# Clean up
+destination = f'{directory}/done/'
+shutil.move(full_path, destination)
