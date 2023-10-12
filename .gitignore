@@ -1,0 +1,5 @@
+*.png
+*.cookies
+.env
+.venv/
+me/
