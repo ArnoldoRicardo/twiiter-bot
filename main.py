@@ -9,7 +9,7 @@ from twitter.account import Account
 
 load_dotenv()
 
-directory = os.getcwd()
+directory = os.path.abspath('./photos')
 
 jpg_files = [f for f in os.listdir(directory) if f.endswith('.png')]
 
@@ -35,7 +35,7 @@ openai.api_key = os.environ.get("API_KEY")
 response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=messages,
-    temperature=0,
+    temperature=0.7,
     max_tokens=256
 )
 
