@@ -9,7 +9,10 @@ from twitter.account import Account
 
 load_dotenv()
 
-directory = os.path.abspath('./photos')
+current_file_path = os.path.abspath(__file__)
+
+current_directory = os.path.dirname(current_file_path)
+directory = os.path.join(current_directory, 'photos')
 
 jpg_files = [f for f in os.listdir(directory) if f.endswith('.png')]
 
@@ -41,7 +44,8 @@ response = openai.ChatCompletion.create(
 
 answer = response['choices'][0]['message']['content']
 
-account = Account(cookies='twitter.cookies')
+cookie_path = os.path.join(current_directory, 'twitter.cookies')
+account = Account(cookies=cookie_path)
 
 response = account.tweet(answer, media=[
     {'media': full_path, 'alt': dalle_prompt},
