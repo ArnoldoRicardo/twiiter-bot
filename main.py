@@ -1,61 +1,32 @@
-import os
-import random
-import re
-import shutil
-
-import openai
 from dotenv import load_dotenv
-from twitter.account import Account
+
+from openai_resource import generate_chat_message, generate_image
+from twitter_bot import upload_tweet
+from utils import clean_up, save_image
 
 load_dotenv()
 
-current_file_path = os.path.abspath(__file__)
 
-current_directory = os.path.dirname(current_file_path)
-directory = os.path.join(current_directory, 'photos')
+def main():
+    dalle_prompt = "black cat with yellow eyes, jumping the fence, in frances. pixel art style"
 
-jpg_files = [f for f in os.listdir(directory) if f.endswith('.png')]
+    image_url = generate_image(dalle_prompt)
+    image_path = save_image(image_url)
 
-random_file = random.choice(jpg_files)
+    messages = [
+        {"role": "system",
+         "content": "You will be provided with descriptions of pixel art pieces. Your task is to turn these dalle3 prompt into attractive and creative short tweets."},
+        {"role": "user", "content": dalle_prompt},
+    ]
 
-full_path = os.path.join(directory, random_file)
+    answer = generate_chat_message(messages)
 
-pattern = r'- (.+?)\.png'
+    tweet_url = upload_tweet(answer, image_path, dalle_prompt)
+    print(tweet_url)
 
-matches = re.findall(pattern, random_file)
+    # Clean up
+    clean_up(image_path)
 
-dalle_prompt = " ".join(matches)
 
-messages = [
-    {"role": "system",
-     "content": "You will be provided with descriptions of pixel art pieces. Your task is to turn these descriptions into attractive and creative short tweets."},
-    {"role": "user", "content": dalle_prompt},
-]
-
-openai.organization = os.environ.get("ORG")
-openai.api_key = os.environ.get("API_KEY")
-
-response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=messages,
-    temperature=0.7,
-    max_tokens=256
-)
-
-answer = response['choices'][0]['message']['content']
-
-cookie_path = os.path.join(current_directory, 'twitter.cookies')
-account = Account(cookies=cookie_path)
-
-response = account.tweet(answer, media=[
-    {'media': full_path, 'alt': dalle_prompt},
-])
-
-print(f"Prompt: {dalle_prompt}")
-print(f"Media: {random_file}")
-print(f"Respuesta: {answer}")
-print(response['data']['create_tweet']['tweet_results']['result']['legacy']['entities']['media'][0]['url'])
-
-# Clean up
-destination = f'{directory}/done/'
-shutil.move(full_path, destination)
+if __name__ == "__main__":
+    main()
