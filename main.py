@@ -35,6 +35,10 @@ def main():
             "name": "mayoneso",
             "description": "orange tabby cat",
         },
+        {
+            "name": 'travel',
+            "description": "this is a random image of a place",
+        }
     ]
 
     character = select_character(characters)
@@ -46,8 +50,7 @@ def main():
         },
         {
             "role": "user",
-            "content": """the name of the character is: {name}
-            and his description is: {description}. be creative and add some details.
+            "content": """{name} is {description}. be creative and add some details.
             """.format(
                 name=character['name'],
                 description=character['description'],
