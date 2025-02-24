@@ -11,4 +11,5 @@ def upload_tweet(answer: str, image_path: str, dalle_prompt: str) -> str:
     response = account.tweet(answer, media=[
         {'media': image_path, 'alt': dalle_prompt},
     ])
+    print('tweet response: ', response)
     return response['data']['create_tweet']['tweet_results']['result']['legacy']['entities']['media'][0]['url']

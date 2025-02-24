@@ -5,8 +5,6 @@ import re
 import shutil
 
 image_dir = os.path.join(os.curdir, 'images')
-if not os.path.isdir(image_dir):
-    os.mkdir(image_dir)
 
 
 def save_image(image_url: str):
@@ -23,3 +21,12 @@ def save_image(image_url: str):
 def clean_up(image_path: str):
     destination = f'{image_dir}/done/'
     shutil.move(image_path, destination)
+
+
+def create_if_dont_exists(dir: str):
+    if not os.path.isdir(dir):
+        os.mkdir(dir)
+
+
+create_if_dont_exists(image_dir)
+create_if_dont_exists(f'{image_dir}/done')
