@@ -50,9 +50,8 @@ def main():
         },
         {
             "role": "user",
-            "content": """{name} is {description}. be creative and add some details.
+            "content": """the character is {description}. be creative and add create some history.
             """.format(
-                name=character['name'],
                 description=character['description'],
             )
         }
